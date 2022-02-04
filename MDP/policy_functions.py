@@ -1,4 +1,7 @@
+GAMMA = 1
 
+
+# run up to max_k iterations to gain a policy for an MDP
 def policy_iteration(states, actions, probability, reward):
     """
     :param list states: set of states
@@ -7,18 +10,26 @@ def policy_iteration(states, actions, probability, reward):
     :param function reward: reward function
     """
     policy = {s: actions[0] for s in states}
+    k = 0
+    max_k = 100
 
-    while True:
+    while True and k < max_k:
         old_policy = policy.copy()
-        values = policy_evaluation(policy, states, probability, reward)
-        policy = policy_improvement(values, states, actions, probability, reward)
+        values = policy_evaluation_v2(policy, states, probability, reward)
+        policy = policy_improvement_v2(values, states, actions, probability, reward)
 
-        if all(old_policy[states] == policy[s] for s in states):
+        print(f"Iteration {k}:\n")
+        print(f"old_policy: {old_policy}\n")
+        print(f"new_policy: {policy}\n")
+        k += 1
+
+        if all(old_policy[s] == policy[s] for s in states):
             break
 
-        return policy
+    return policy
 
 
+# evaluate the MDP and current policy to gain new values
 def policy_evaluation(policy, states, probability, reward):
     values = {s: 0 for s in states}
 
@@ -26,8 +37,10 @@ def policy_evaluation(policy, states, probability, reward):
         old_value = values.copy()
 
         for s in states:
-            a = policy[s]
-            values[s] = reward(s, a) + sum(probability(s, a, s_next) * old_value[s_next] for s_next in states)
+            if s != "END":
+                a = policy[s]
+                values[s] = reward(s, a) + sum(probability(s, a, s_next) * GAMMA * old_value[s_next]
+                                               for s_next in states)
 
         if all(old_value[s] == values[s] for s in states):
             break
@@ -35,14 +48,60 @@ def policy_evaluation(policy, states, probability, reward):
     return values
 
 
+# use new values to gain a new policy for the MDP
 def policy_improvement(values, states, actions, probability, reward):
     policy = {s: actions[0] for s in states}
 
     for s in states:
-        Q = {}
-        for a in actions:
-            Q[a] = reward(s, a) + sum(probability(s, a, s_next) * values[s_next] for s_next in states)
+        if s != "END":
+            Q = {}
+            for a in actions:
+                Q[a] = reward(s, a) + sum(probability(s, a, s_next) * values[s_next] for s_next in states)
 
-        policy[s] = max(Q, key=Q.get)
+            policy[s] = max(Q, key=Q.get)
+
+    return policy
+
+
+# less redundancy by checking only possible next states
+def policy_evaluation_v2(policy, states, probability, reward):
+    values = {s: 0 for s in states}
+
+    while True:
+        old_value = values.copy()
+
+        for s in states:
+            if s != "END":
+                next_states = ["END"]
+                if s != "Q10":
+                    temp = int(s.replace("Q", "")) + 1
+                    next_states.append("Q"+str(temp))
+
+                a = policy[s]
+                values[s] = reward(s, a) + sum(probability(s, a, s_next) * GAMMA * old_value[s_next]
+                                               for s_next in next_states)
+
+        if all(old_value[s] == values[s] for s in states):
+            break
+
+    return values
+
+
+# less redundancy by checking only possible next states
+def policy_improvement_v2(values, states, actions, probability, reward):
+    policy = {s: actions[0] for s in states}
+
+    for s in states:
+        if s != "END":
+            next_states = ["END"]
+            if s != "Q10":
+                temp = int(s.replace("Q", "")) + 1
+                next_states.append("Q" + str(temp))
+
+            Q = {}
+            for a in actions:
+                Q[a] = reward(s, a) + sum(probability(s, a, s_next) * values[s_next] for s_next in next_states)
+
+            policy[s] = max(Q, key=Q.get)
 
     return policy
