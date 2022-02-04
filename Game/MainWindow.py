@@ -54,6 +54,7 @@ class GUIManager:
             self.gameStatusLabel.config(text="Game Over",fg='#f00')
             self.answerButton.config(state="disabled")
             self.quitButton.config(state="disable")
+            self.totalRewardLabel.config(text=f"Total Reword: 0")
 
     def quit(self):
         self.gameStatusLabel.config(text="You Quit!", fg="#0f0")
