@@ -12,5 +12,6 @@ class QuizGame:
             return 1
 
         elif s_next == "END":
-            switch(a):
+            pass
 
+        
