@@ -7,7 +7,7 @@ class GUIManager:
         self.master = master
         self.questionNumber = 1
         self.totalReward = 0
-        self.rewards = [1, 5, 20, 50, 100, 500, 1000, 5000, 15000, 75000]
+        self.rewards = [1, 5, 10, 50, 100, 500, 1000, 5000, 15000, 75000]
         self.probabilities = [0.99, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]
 
         master.title("Quiz Simulator")
