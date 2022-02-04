@@ -1,4 +1,5 @@
 GAMMA = 1
+MAX_K = 1000
 
 
 # run up to max_k iterations to gain a policy for an MDP
@@ -11,9 +12,8 @@ def policy_iteration(states, actions, probability, reward):
     """
     policy = {s: actions[0] for s in states}
     k = 0
-    max_k = 100
 
-    while True and k < max_k:
+    while k < MAX_K:
         old_policy = policy.copy()
         values = policy_evaluation_v2(policy, states, probability, reward)
         policy = policy_improvement_v2(values, states, actions, probability, reward)
@@ -66,8 +66,9 @@ def policy_improvement(values, states, actions, probability, reward):
 # less redundancy by checking only possible next states
 def policy_evaluation_v2(policy, states, probability, reward):
     values = {s: 0 for s in states}
+    k = 0
 
-    while True:
+    while k < MAX_K:
         old_value = values.copy()
 
         for s in states:
@@ -78,9 +79,11 @@ def policy_evaluation_v2(policy, states, probability, reward):
                     next_states.append("Q"+str(temp))
 
                 a = policy[s]
-                values[s] = reward(s, a) + sum(probability(s, a, s_next) * GAMMA * old_value[s_next]
-                                               for s_next in next_states)
+                # values[s] = reward(s, a) + sum(probability(s, a, s_next) * GAMMA * old_value[s_next] for s_next in next_states)
+                values[s] = round(sum(probability(s, a, s_next) * (reward(s, a) + GAMMA * old_value[s_next]) for s_next in next_states), 2)
 
+        k += 1
+        print(f"{old_value} \n{values}\n======")
         if all(old_value[s] == values[s] for s in states):
             break
 
@@ -100,7 +103,8 @@ def policy_improvement_v2(values, states, actions, probability, reward):
 
             Q = {}
             for a in actions:
-                Q[a] = reward(s, a) + sum(probability(s, a, s_next) * values[s_next] for s_next in next_states)
+                # Q[a] = reward(s, a) + sum(probability(s, a, s_next) * values[s_next] for s_next in next_states)
+                Q[a] = round(sum(probability(s, a, s_next) * (reward(s, a) + GAMMA * values[s_next])for s_next in next_states), 2)
 
             policy[s] = max(Q, key=Q.get)
 

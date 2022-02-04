@@ -43,15 +43,15 @@ class QuizGame:
         elif a == "quit_game" and s_next != "END":
             return 0
 
-        # chose to play and lose
-        elif s_next == "END":
-            p, r = PROBABILITY_AND_REWARD_DICT[s]
-            return 1-p
-
         # chose to play and won
         elif (s, s_next) in POSSIBLE_TRANSITIONS_DICT:
             p, r = PROBABILITY_AND_REWARD_DICT[s]
             return p
+
+        # chose to play and lose
+        elif s_next == "END":
+            p, r = PROBABILITY_AND_REWARD_DICT[s]
+            return 1 - p
 
         # unrealistic transitions
         else:
