@@ -1,4 +1,3 @@
-import random
 
 POSSIBLE_TRANSITIONS_DICT = {
     ("Q1", "Q2"): (0.99, 1),
@@ -58,43 +57,49 @@ class QuizGame:
             return 0
 
     # return the reward for doing action a from state s
-    def reward(self, s, a):
+    def reward(self, s, a, s_next):
 
         # chose to quit
         if a == "quit_game":
             return 0
 
-        else:
-            rand = random.randint(0, 100)
+        # answered correct
+        elif (s, s_next) in POSSIBLE_TRANSITIONS_DICT:
             p, r = PROBABILITY_AND_REWARD_DICT[s]
+            return r
 
-            # answered correct
-            if rand < p * 100:
-                return r
+        # answered wrong
+        else:
+            match s:
+                case "Q1":
+                    return 0
+                case "Q2":
+                    return -1
+                case "Q3":
+                    return -6
+                case "Q4":
+                    return -16
+                case "Q5":
+                    return -66
+                case "Q6":
+                    return -166
+                case "Q7":
+                    return -666
+                case "Q8":
+                    return -1666
+                case "Q9":
+                    return -6666
+                case "Q10":
+                    return -21666
 
-            # answered wrong
-            else:
-                match s:
-                    case "Q1":
-                        return 0
-                    case "Q2":
-                        return -1
-                    case "Q3":
-                        return -6
-                    case "Q4":
-                        return -16
-                    case "Q5":
-                        return -66
-                    case "Q6":
-                        return -166
-                    case "Q7":
-                        return -666
-                    case "Q8":
-                        return -1666
-                    case "Q9":
-                        return -6666
-                    case "Q10":
-                        return -21666
+            # sum = 0
+            # temp = int(s.replace("Q", ""))
+            # for index in range(1, temp):
+            #     s_index = "Q" + str(index)
+            #     p, r = PROBABILITY_AND_REWARD_DICT[s_index]
+            #
+            #     sum += r
+            # return -sum
 
 # print("start\n")
 # quiz = QuizGame()
