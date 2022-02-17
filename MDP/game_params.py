@@ -1,4 +1,3 @@
-
 POSSIBLE_TRANSITIONS_DICT = {
     ("Q1", "Q2"): (0.99, 1),
     ("Q2", "Q3"): (0.9, 5),
@@ -26,91 +25,57 @@ PROBABILITY_AND_REWARD_DICT = {
 }
 
 
+# return the probability to move from state s to next_s by using action a
+def probability(s, a, next_s):
+
+    # chose to quit
+    if a == "quit_game" and next_s == "END":
+        return 1
+
+    # impossible
+    elif a == "quit_game" and next_s != "END":
+        return 0
+
+    # chose to play and win
+    elif (s, next_s) in POSSIBLE_TRANSITIONS_DICT:
+        p, r = PROBABILITY_AND_REWARD_DICT[s]
+        return p
+
+    # chose to play and lose
+    elif next_s == "END":
+        p, r = PROBABILITY_AND_REWARD_DICT[s]
+        return 1. - p
+
+    # unrealistic transitions
+    else:
+        return 0
+
+
+# return the reward for doing action a from state s and reaching state next_s
+def reward(s, a, next_s):
+
+    # chose to quit
+    if a == "quit_game":
+        return 0
+
+    # correct answer
+    elif (s, next_s) in POSSIBLE_TRANSITIONS_DICT:
+        p, r = PROBABILITY_AND_REWARD_DICT[s]
+        return r
+
+    # wrong answer
+    else:
+        reward_sum = 0
+        temp = int(s.replace("Q", ""))
+        for index in range(1, temp):
+            s_index = "Q" + str(index)
+            p, r = PROBABILITY_AND_REWARD_DICT[s_index]
+
+            reward_sum += r
+        return -reward_sum
+
+
 class QuizGame:
     def __init__(self):
         self.STATES = ["Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "END"]
         self.ACTIONS = ["quit_game", "play"]
-
-    # return the probability to move from state s to s_next by using action a
-    def probability(self, s, a, s_next):
-
-        # chose to quit
-        if a == "quit_game" and s_next == "END":
-            return 1
-
-        # impossible
-        elif a == "quit_game" and s_next != "END":
-            return 0
-
-        # chose to play and won
-        elif (s, s_next) in POSSIBLE_TRANSITIONS_DICT:
-            p, r = PROBABILITY_AND_REWARD_DICT[s]
-            return p
-
-        # chose to play and lose
-        elif s_next == "END":
-            p, r = PROBABILITY_AND_REWARD_DICT[s]
-            return 1 - p
-
-        # unrealistic transitions
-        else:
-            return 0
-
-    # return the reward for doing action a from state s
-    def reward(self, s, a, s_next):
-
-        # chose to quit
-        if a == "quit_game":
-            return 0
-
-        # answered correct
-        elif (s, s_next) in POSSIBLE_TRANSITIONS_DICT:
-            p, r = PROBABILITY_AND_REWARD_DICT[s]
-            return r
-
-        # answered wrong
-        else:
-            match s:
-                case "Q1":
-                    return 0
-                case "Q2":
-                    return -1
-                case "Q3":
-                    return -6
-                case "Q4":
-                    return -16
-                case "Q5":
-                    return -66
-                case "Q6":
-                    return -166
-                case "Q7":
-                    return -666
-                case "Q8":
-                    return -1666
-                case "Q9":
-                    return -6666
-                case "Q10":
-                    return -21666
-
-            # sum = 0
-            # temp = int(s.replace("Q", ""))
-            # for index in range(1, temp):
-            #     s_index = "Q" + str(index)
-            #     p, r = PROBABILITY_AND_REWARD_DICT[s_index]
-            #
-            #     sum += r
-            # return -sum
-
-# print("start\n")
-# quiz = QuizGame()
-# print(quiz.STATES)
-# print(quiz.ACTIONS)
-# print(probability(quiz.STATES[0], quiz.ACTIONS[0], quiz.STATES[10]))
-# print(probability(quiz.STATES[0], quiz.ACTIONS[1], quiz.STATES[10]))
-# print(probability(quiz.STATES[1], quiz.ACTIONS[0], quiz.STATES[5]))
-# print(probability(quiz.STATES[5], quiz.ACTIONS[0], quiz.STATES[6]))
-# print(probability(quiz.STATES[5], quiz.ACTIONS[1], quiz.STATES[6]))
-# print(probability(quiz.STATES[5], quiz.ACTIONS[1], quiz.STATES[7]))
-#
-# for i in range(0, 10):
-#     print(reward(quiz.STATES[8], quiz.ACTIONS[1]))
