@@ -86,7 +86,6 @@ class GUIManager:
         self.quitButton.config(state="disable")
 
     def getMDPAdvice(self):
-        print(self.policy)
         if self.policy["Q" + str(self.questionNumber)] == "play":
         # if self.questionNumber < 3:
 
