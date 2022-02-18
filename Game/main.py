@@ -1,7 +1,9 @@
 from tkinter import Tk
-import MainWindow
+
+from Game.MainWindow import GUIManager
 
 
-root = Tk()
-my_gui = MainWindow.GUIManager(root)
-root.mainloop()
+def startGame(policy):
+    root = Tk()
+    GUIManager(root, policy)
+    root.mainloop()
