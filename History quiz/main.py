@@ -38,6 +38,7 @@ def check_answer():
         answer_result_label.config(text="Right answer!", fg="#0f0")
         questionIndex = questionIndex + 1
         if questionIndex == NUMBER_OF_QUESTIONS:
+            print("You WON!")
             exit()
         display_question_and_answers(questionIndex, radioButton1, radioButton2, radioButton3, radioButton4,
                                      question_label)

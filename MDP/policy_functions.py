@@ -1,4 +1,4 @@
-GAMMA = 0.1
+GAMMA = 1
 MAX_K = 100
 
 

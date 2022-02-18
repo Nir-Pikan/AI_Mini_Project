@@ -43,7 +43,6 @@ class GUIManager:
         chance = random.random()
         print(f"Chance for correct answer: {self.probabilities[self.questionNumber - 1]}")
         print(f"The random value is: {chance}")
-        self.getMDPAdvice()
         if chance < (self.probabilities[self.questionNumber - 1]):
             self.totalReward = self.totalReward + self.rewards[self.questionNumber - 1]
             self.totalRewardLabel.config(text=f"Total Reword: {self.totalReward}")
@@ -54,6 +53,8 @@ class GUIManager:
 
             if self.questionNumber > 10:
                 self.gameFinished()
+
+            self.getMDPAdvice()
         else:
             print("Game Over")
             self.gameStatusLabel.config(text="Game Over", fg='#f00')
@@ -85,6 +86,7 @@ class GUIManager:
         self.quitButton.config(state="disable")
 
     def getMDPAdvice(self):
+        print(self.policy)
         if self.policy["Q" + str(self.questionNumber)] == "play":
         # if self.questionNumber < 3:
 
